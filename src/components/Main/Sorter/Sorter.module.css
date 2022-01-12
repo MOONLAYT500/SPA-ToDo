@@ -1,0 +1,67 @@
+.sort {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sortButton {
+  background: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.sortButton:hover {
+  transform: scale(1.25);
+}
+
+.sortButtonActive {
+  border-bottom: 3px solid black;
+}
+
+.sortByDate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.sortDataText {
+  padding-right: 10px;
+}
+
+.sortDateButton {
+  border: none;
+  padding: 0 5px 0 5px;
+  background: transparent;
+  cursor: pointer;
+  padding-top: 5px;
+  transition: transform 0.5s;
+}
+
+.sortDateButton:last-of-type {
+  transform: rotate(180deg);
+}
+
+.sortDateButtonActive {
+  border: 1px solid red;
+  border-radius: 50%;
+}
+
+.arrowUp {
+  width: 15px;
+}
+
+.arrowUp:hover {
+  transform: scale(1.25);
+}
+
+@media (max-width: 500px) {
+  .sort-menu-buttons {
+    display: flex;
+    flex-direction: column;
+  }
+  .sort-by-date {
+    flex-direction: column;
+  }
+}

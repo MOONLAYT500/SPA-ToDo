@@ -1,0 +1,22 @@
+.inputBlock {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0 20px 0;
+}
+
+.inputBar {
+  width: 100%;
+  border-radius: 5px 0 0 5px;
+  border: none;
+}
+
+.addTask {
+  background-color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.addTask:hover {
+  color: rgb(0, 204, 255);
+}
