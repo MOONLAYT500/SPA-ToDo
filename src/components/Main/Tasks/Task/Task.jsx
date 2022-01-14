@@ -7,13 +7,11 @@ const Task = () => {
         className={s.taskCheck}
         type="checkbox"
         name="task-check"
-        id="task-check1"
+        id="taskCheck"
       />
-      <label htmlFor={s.taskCheck1}></label>
-      <span className={s.taskText}>do smth</span>
+      <input type="text" name="" id="" className={s.taskText}/>
       <span className={s.taskDate}>11.01.2022</span>
       <button className={s.deleteTask}>
-        <img className={s.deleteIcon} src="./img/delete.png" alt="Delete" />
       </button>
     </div>
   );

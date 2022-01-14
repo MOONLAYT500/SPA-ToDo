@@ -31,12 +31,16 @@
 }
 
 .sortDateButton {
+  background: url(../../../img/arrowUp.svg);
   border: none;
   padding: 0 5px 0 5px;
-  background: transparent;
+  width: 15px;
+  height: 15px;
+  background-position: center;
   cursor: pointer;
   padding-top: 5px;
   transition: transform 0.5s;
+  background-size: contain;
 }
 
 .sortDateButton:last-of-type {
@@ -46,14 +50,6 @@
 .sortDateButtonActive {
   border: 1px solid red;
   border-radius: 50%;
-}
-
-.arrowUp {
-  width: 15px;
-}
-
-.arrowUp:hover {
-  transform: scale(1.25);
 }
 
 @media (max-width: 500px) {
