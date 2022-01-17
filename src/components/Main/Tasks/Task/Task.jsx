@@ -1,6 +1,17 @@
+import React, {useState} from 'react';
 import s from './Task.module.css';
 
-const Task = () => {
+const Task = ({ todo, deletePost,chekTask}) => {
+  const dateToString = (date) => {
+    return `${date.getDate()}.${
+      date.getMonth() + 1
+    }.${date.getFullYear()},${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}`;
+  };
+
+  let doneCheck = () => {
+    chekTask(todo.id)
+  };
+
   return (
     <div className={s.task}>
       <input
@@ -8,11 +19,24 @@ const Task = () => {
         type="checkbox"
         name="task-check"
         id="taskCheck"
+        checked={todo.checked}
+        onChange={doneCheck}
       />
-      <input type="text" name="" id="" className={s.taskText}/>
-      <span className={s.taskDate}>11.01.2022</span>
-      <button className={s.deleteTask}>
-      </button>
+      {/* <span 
+        type="text" 
+        className={s.taskText} 
+        value={todo.text}/> */}
+        <span
+          type="text" 
+          className={s.taskText}
+        >{todo.text}</span>
+      <span className={s.taskDate}>{dateToString(todo.date)}</span>
+      <button
+        className={s.deleteTask}
+        onClick={() => {
+          deletePost(todo.id);
+        }}
+      ></button>
     </div>
   );
 };

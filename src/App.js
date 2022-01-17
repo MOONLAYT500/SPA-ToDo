@@ -1,48 +1,110 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import Main from './components/Main/Main';
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const [timeTodos, setTimeTodos] = useState(todos)
+  const [filteredTodos,setFilteredTodos] = useState(timeTodos)
 
-const [todos,setTodos] = useState([]);
-const [filteredTasks,setFilteredTasks]=useState(todos)
-const [checked,setChecked]=useState()
-console.log(checked);
+  useEffect(()=>
+  { setTimeTodos(todos)
+  }, [todos]
+)
+
+  useEffect(()=>
+    { setFilteredTodos(timeTodos)
+    }, [timeTodos]
+  )
 
 
 
-const addPost = (todo) => {
-  if (!todo.text || /^\s*$/.test(todo.text)) {
-    return;
+  const createPost = (input) => {
+    addPost({
+      id: Math.trunc(Math.random() * 10000),
+      text: input,
+      date: new Date(),
+      checked: false,
+    });
+  };
+
+  const addPost = (todo) => {
+    if (!todo.text || /^\s*$/.test(todo.text)) {
+      return;
+    }
+
+    const newTodos = [todo, ...todos];
+    setTodos(newTodos);
+  };
+
+  const deletePost = (id) => {
+    setTodos([...todos].filter((todo) => todo.id !== id));
+  };
+
+  const chekTask = (id) => {
+    let checkedTodos = todos.map(
+      todo=>{
+        if(todo.id === id) {
+          todo.checked = !todo.checked
+        }
+        return todo
+      })
+      setTodos(checkedTodos)
   }
 
-  const newTodos = [todo, ...todos]
-  setTodos(newTodos);
-};
+  const oldFilter = () => {
+    const oldTasks = todos.sort(
+      (a,b)=>a.date-b.date
+    ).map(item=>item)
+    setFilteredTodos(oldTasks)
+  }
 
-const deletePost = id => {
-  setTodos([...todos].filter(todo=>todo.id!==id))
-}
+  const newFilter = () => {
+    const newTasks = todos.sort(
+      (a,b)=>b.date-a.date
+    ).map(item=>item)
+    setFilteredTodos(newTasks)
+  }
 
-const taskFilter=()=>{
-}
+  const taskFilterAll = () => {
+    setFilteredTodos(timeTodos)
+  };  
 
-let doneCheck = () => {
-  setChecked()
-}
+  const taskFilterDone = () => {
+    const doneTasks = timeTodos.filter(
+      (timeTodo) => timeTodo.checked === true
+    );
+    setFilteredTodos(doneTasks)
+  };
+
+  const taskFilterUnDone = () => {
+    const unDoneTasks = timeTodos.filter(
+      (timeTodo) => timeTodo.checked === false
+    );
+    setFilteredTodos(unDoneTasks)
+  };
+
+
+
+
 
   return (
-    <div className='body'>
-      <Header/>
-      <Main 
+    <div className="body">
+      <Header />
+      <Main
+        taskFilterAll={taskFilterAll}
+        filteredTodos={filteredTodos}
+        createPost={createPost}
+        taskFilterDone={taskFilterDone}
+        taskFilterUnDone={taskFilterUnDone}
+        newFilter={newFilter}
+        oldFilter={oldFilter}
         addPost={addPost}
+        chekTask={chekTask}
         deletePost={deletePost}
-        todos={todos}
-        taskFilter={taskFilter}
-        doneCheck={doneCheck}/>
-        
-  </div>
+      />
+    </div>
   );
 }
 

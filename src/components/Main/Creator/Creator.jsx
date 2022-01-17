@@ -1,31 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import s from './Creator.module.css';
 
-const Creator = ({addPost}) => {
+const Creator = ({createPost,addPost}) => {
 
   const [input, setInput] = useState('');
-  const inputRef = useRef();
-  useEffect(() => {
-    inputRef.current.focus();
-  });
 
   const handlerChange = (e) => {
     setInput(e.target.value);
-  };
+  }; 
 
-  const createPost = (e) => {
+  const handlerSubmit = (e) => {
     e.preventDefault();
-    addPost({
-      id: Math.trunc(Math.random() * 10000),
-      text: input,
-      date: new Date(),
-      checked: false,
-    });
+    createPost(input)
     setInput('');
   };
 
   return (
-    <form className={s.inputBlock} onSubmit={createPost}>
+    <form className={s.inputBlock} onSubmit={handlerSubmit}>
       <input
         className={s.inputBar}
         type="text"
@@ -33,7 +24,7 @@ const Creator = ({addPost}) => {
         value={input}
         name="text"
         onChange={handlerChange}
-        ref={inputRef}
+        autoFocus
       />
       <button className={s.addTask}>ADD</button>
     </form>
