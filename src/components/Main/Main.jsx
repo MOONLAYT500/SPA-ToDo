@@ -7,6 +7,7 @@ import Tasks from './Tasks/Tasks';
 const Main = ({
   createPost,
   addPost,
+  editPost,
   deletePost,
   filteredTodos,
   taskFilterAll,
@@ -20,7 +21,7 @@ const Main = ({
   return (
     <div className={s.container}>
       <Creator createPost={createPost} addPost={addPost} />
-      <Sorter 
+      <Sorter
         taskFilterAll={taskFilterAll}
         taskFilterDone={taskFilterDone}
         taskFilterUnDone={taskFilterUnDone}
@@ -28,6 +29,8 @@ const Main = ({
         oldFilter={oldFilter}
       />
       <Tasks
+        createPost={createPost}
+        editPost={editPost}
         deletePost={deletePost}
         filteredTodos={filteredTodos}
         checked={checked}

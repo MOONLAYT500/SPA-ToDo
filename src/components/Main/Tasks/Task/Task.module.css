@@ -16,6 +16,10 @@
   text-align: left;
 }
 
+.taskText::placeholder  {
+  color: rgb(0, 0, 0);
+}
+
 .taskText:focus {
   border: 1px solid black;
   border-radius: 15px;

@@ -1,16 +1,36 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import s from './Task.module.css';
 
-const Task = ({ todo, deletePost,chekTask}) => {
+const Task = ({ todo, deletePost, chekTask, editPost }) => {
+  const [input, setInput] = useState(todo.text);
+
   const dateToString = (date) => {
     return `${date.getDate()}.${
       date.getMonth() + 1
     }.${date.getFullYear()},${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}`;
   };
 
+
+
   let doneCheck = () => {
-    chekTask(todo.id)
+    chekTask(todo.id);
   };
+
+  const handlerSubmit = (e) => {
+    e.preventDefault();
+    editPost(input, todo.id);
+    setInput(input);
+  };
+
+  const changeText = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.target.blur()
+    }
+  }
 
   return (
     <div className={s.task}>
@@ -21,15 +41,24 @@ const Task = ({ todo, deletePost,chekTask}) => {
         id="taskCheck"
         checked={todo.checked}
         onChange={doneCheck}
+        
       />
-      {/* <span 
-        type="text" 
-        className={s.taskText} 
-        value={todo.text}/> */}
-        <span
-          type="text" 
+      <form
+        className={s.taskText}
+        onKeyDown={handleKeyDown}
+        onSubmit={handlerSubmit}
+
+      >
+        <input
+          type="text"
           className={s.taskText}
-        >{todo.text}</span>
+          value={input}
+          onChange={changeText}
+        />
+      </form>
+      {/* <span type="text" className={s.taskText}>
+        {todo.text}
+      </span> */}
       <span className={s.taskDate}>{dateToString(todo.date)}</span>
       <button
         className={s.deleteTask}
