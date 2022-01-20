@@ -21,5 +21,10 @@
 }
 
 .pageButtonActive {
-  background-color: blanchedalmond;
+  color: red;
+  
+}
+
+.pageButton:hover {
+  border-color: red;
 }

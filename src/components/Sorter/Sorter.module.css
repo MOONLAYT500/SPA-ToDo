@@ -17,7 +17,8 @@
 }
 
 .sortButtonActive {
-  border-bottom: 3px solid black;
+  color: red;
+  border-bottom: 3px solid red;
 }
 
 .sortByDate {
@@ -31,7 +32,7 @@
 }
 
 .sortDateButton {
-  background: url(../../../img/arrowUp.svg);
+  background: url(../../img/arrowUp.svg);
   border: none;
   padding: 0 5px 0 5px;
   width: 15px;

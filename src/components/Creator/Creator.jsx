@@ -1,17 +1,16 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import s from './Creator.module.css';
 
-const Creator = ({createPost}) => {
-
+const Creator = ({ createTodo }) => {
   const [input, setInput] = useState('');
 
   const handlerChange = (e) => {
     setInput(e.target.value);
-  }; 
+  };
 
   const handlerSubmit = (e) => {
     e.preventDefault();
-    createPost(input)
+    createTodo(input);
     setInput('');
   };
 
@@ -22,7 +21,6 @@ const Creator = ({createPost}) => {
         type="text"
         placeholder="I want to do..."
         value={input}
-        name="text"
         onChange={handlerChange}
         autoFocus
       />
@@ -32,5 +30,3 @@ const Creator = ({createPost}) => {
 };
 
 export default Creator;
-
-

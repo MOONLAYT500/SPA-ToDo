@@ -10,6 +10,10 @@
   border: none;
 }
 
+.inputBar:focus {
+  outline: none;
+}
+
 .addTask {
   background-color: white;
   border: none;
@@ -18,5 +22,5 @@
 }
 
 .addTask:hover {
-  color: rgb(0, 204, 255);
+  color: red;
 }

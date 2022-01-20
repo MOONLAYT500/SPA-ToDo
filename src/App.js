@@ -1,104 +1,138 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Header from './components/Header/Header';
-import Main from './components/Main/Main';
+import Creator from './components/Creator/Creator';
+import Scroll from './components/Scroll/Scroll';
+import Sorter from './components/Sorter/Sorter';
+import Tasks from './components/Tasks/Tasks';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [timeTodos, setTimeTodos] = useState(todos);
-  const [filteredTodos, setFilteredTodos] = useState(timeTodos);
+  const [todos, setTodos] = useState([]); //глобальный стейт, в который приходит пост после создания
+  const [filteredTodos, setFilteredTodos] = useState(todos); // отфильтрованные по статусу посты в начальном стейте , меняються по выполненным/не выполненным
+  const [currentPage, setCurrentPage] = useState(1); // текущая страница отображения постов
+  const [todosStatus, setTodosStatus] = useState('a')
+  
+  const [todosTimeFilter, setTodosTimeFilter] = useState('f')
+
+
+  const lastTodoIndex = currentPage * 5; //индекс последнего элемента на странице -умножаем текущую страницу на количетво постов на странице
+  const firstTodoIndex = lastTodoIndex - 5; //индекс первого элемента - послдений элемент минус количество на странице
+  const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); //текущая страница, вырезаем из массива постов элементы с певого по последний и получаем подмассив с количеством постов 5 и нужными индексами
+  useEffect(() => {
+    let renderedTodos = [...todos]
+
+    if (todosStatus === 'a') {
+      setFilteredTodos(renderedTodos)}
+    if (todosStatus === 'd') {
+      renderedTodos = todos.filter((todo) => todo.checked === true)
+      setCurrentPage(1)}
+    if (todosStatus === 'u') {
+      renderedTodos = todos.filter((todo) => todo.checked === false)
+      setCurrentPage(1)}
+    
+    if (todosTimeFilter === 'o') {
+        renderedTodos.sort((a, b) => a.date - b.date)}
+    if (todosTimeFilter === 'f') {
+        renderedTodos.sort((a, b) => b.date - a.date)}  
+
+    setFilteredTodos(renderedTodos)
+    
+  }, [todos,todosStatus,todosTimeFilter]);
 
   useEffect(() => {
-    setTimeTodos(todos);
-  }, [todos]);
+    //рендер по изменению глобального стейта при фильтрации внутри пагинации
+    setCurrentPage(currentPage);
+  }, [filteredTodos]);
 
-  useEffect(() => {
-    setFilteredTodos(timeTodos);
-  }, [timeTodos]);
+  const createTodo = (input) => {
+    //создание задачи
+    const todo = {
+      // формируем задачу
+      id: Math.trunc(Math.random() * 10000), //рандомный айдишник
+      text: input, //получаем текст из инпута
+      date: new Date(), // создаем новую дату
+      checked: false, // задаем посту то, что он не выполнен
+    };
 
-  const createPost = (input) => {
-    addPost({
-      id: Math.trunc(Math.random() * 10000),
-      text: input,
-      date: new Date(),
-      checked: false,
-    });
-  };
-
-  const addPost = (todo) => {
     if (!todo.text || /^\s*$/.test(todo.text)) {
-      return;
+      return; // убираем лишние пробелы и пустую строку
     }
 
-    const newTodos = [todo, ...todos];
-    setTodos(newTodos);
+    // const newTodos = [todo, ...todos]; //добавляем новую задачу и спредим в новый массив задач старый массив
+    setTodos([todo, ...todos]); // задаем массив новых задач стейту
   };
 
-  const editPost = (input, id) => {
-    const n = todos.find((todo) => todo.id == id);
-    n.text = input;
-    todos.map((obj) => obj.text == input);
-    setFilteredTodos(todos.map((item) => item));
+  const editTodo = (input, id) => {
+    //редактируем пост -надо изменить функцию
+    const n = todos.find((todo) => todo.id == id); // ищем пост, который редактируем в массиве
+    n.text = input; //задаем новое значене тексту задачи в найденном посте
+    todos.map((obj) => obj.text === input); // меняем пост в массиве
+    setTodos(todos); //задаем стейт из отредактированного
   };
 
-  const deletePost = (id) => {
-    setTodos([...todos].filter((todo) => todo.id !== id));
-  };
-
-  const chekTask = (id) => {
-    let checkedTodos = todos.map((todo) => {
+  const chekTodo = (id) => {
+    // ставим статус выполненно
+    const checkedTodos = todos.map((todo) => {
+      // создаем новый массив из стейта
       if (todo.id === id) {
-        todo.checked = !todo.checked;
+        // если айди поста в стейте совпадает с выбранным
+        todo.checked = !todo.checked; // меняем атрибут checked в выбранном посте
       }
-      return todo;
+      return todo; // если не совпадает, возвращаем без изменений
     });
-    setTodos(checkedTodos);
+    setTodos(checkedTodos); // обновляем стейт
   };
 
-  const oldFilter = () => {
-    const oldTasks = todos.sort((a, b) => a.date - b.date).map((item) => item);
-    setFilteredTodos(oldTasks);
+  const dateFilter = (key) => {
+    if (key === 'o') {setTodosTimeFilter(key)}
+    if (key === 'f') {setTodosTimeFilter(key)}
   };
 
-  const newFilter = () => {
-    const newTasks = todos.sort((a, b) => b.date - a.date).map((item) => item);
-    setFilteredTodos(newTasks);
+  const statusFilter = (key) => {
+    if (key === 'a') setTodosStatus(key)
+    if (key === 'd') {setCurrentPage(1) 
+      setTodosStatus(key)}
+    if (key === 'u') {
+      setCurrentPage(1)
+      setTodosStatus(key)
+    }
   };
 
-  const taskFilterAll = () => {
-    setFilteredTodos(timeTodos);
+  const deleteTodo = (id) => {
+    //удаляем пост
+    setTodos(todos.filter((todo) => todo.id !== id)); // спредим массив в новый массив, в котором оставляем только посты, которые не совпадают по айди с выбранным
   };
 
-  const taskFilterDone = () => {
-    const doneTasks = timeTodos.filter((timeTodo) => timeTodo.checked === true);
-    setFilteredTodos(doneTasks);
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber); // переключение по страницам - принимаем номер страницы и записываем его в стейт текущей страницы для отображения
 
-  const taskFilterUnDone = () => {
-    const unDoneTasks = timeTodos.filter(
-      (timeTodo) => timeTodo.checked === false
-    );
-    setFilteredTodos(unDoneTasks);
-  };
+  if (filteredTodos.length !== 0 && currentTodos.length === 0) {
+    paginate(currentPage - 1);
+  }
 
   return (
     <div className="body">
-      <Header />
-      <Main
-        taskFilterAll={taskFilterAll}
-        filteredTodos={filteredTodos}
-        createPost={createPost}
-        taskFilterDone={taskFilterDone}
-        taskFilterUnDone={taskFilterUnDone}
-        newFilter={newFilter}
-        oldFilter={oldFilter}
-        addPost={addPost}
-        editPost={editPost}
-        chekTask={chekTask}
-        deletePost={deletePost}
-      />
+      <h1 className="header">To-Do List</h1>
+      <div className="container">
+        <Creator createTodo={createTodo} />
+        <Sorter statusFilter={statusFilter} dateFilter={dateFilter} />
+        <Tasks
+          editTodo={editTodo}
+          deleteTodo={deleteTodo}
+          filteredTodos={filteredTodos}
+          chekTodo={chekTodo}
+          currentTodos={currentTodos}
+        />
+        {filteredTodos.length > 5 && (
+          <Scroll
+            paginate={paginate}
+            postsNumber={filteredTodos.length}
+            currentPage={currentPage}
+          />
+        )}
+      </div>
     </div>
   );
 }
 
 export default App;
+
+// по максимуму рефакторить - но лушче переходить к беку и апишке
