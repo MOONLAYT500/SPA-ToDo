@@ -10,17 +10,16 @@ function App() {
   const [filteredTodos, setFilteredTodos] = useState(todos); // отфильтрованные по статусу посты в начальном стейте , меняються по выполненным/не выполненным
   const [currentPage, setCurrentPage] = useState(1); // текущая страница отображения постов
   const [todosStatus, setTodosStatus] = useState('a')
-  
   const [todosTimeFilter, setTodosTimeFilter] = useState('f')
-
+  const [todoDelete, setTodoDelete] = useState()
 
   const lastTodoIndex = currentPage * 5; //индекс последнего элемента на странице -умножаем текущую страницу на количетво постов на странице
   const firstTodoIndex = lastTodoIndex - 5; //индекс первого элемента - послдений элемент минус количество на странице
   const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); //текущая страница, вырезаем из массива постов элементы с певого по последний и получаем подмассив с количеством постов 5 и нужными индексами
   useEffect(() => {
     let renderedTodos = [...todos]
-    // фильтры по checked 
-    if (todosStatus === 'a') setFilteredTodos(renderedTodos)
+    // checked filters 
+    {if (todosStatus === 'a') setFilteredTodos(renderedTodos)
     if (todosStatus === 'd') {
       renderedTodos = todos.filter((todo) => todo.checked === true)
       setCurrentPage(1)
@@ -28,19 +27,15 @@ function App() {
     if (todosStatus === 'u') {
       renderedTodos = todos.filter((todo) => todo.checked === false)
       setCurrentPage(1)
-    }
+    }}
+    // date filters  
+    todosTimeFilter === 'o' ? renderedTodos.sort((a, b) => a.date - b.date) :  renderedTodos.sort((a, b) => b.date - a.date) 
     
-    if (todosTimeFilter === 'o') {
-        renderedTodos.sort((a, b) => a.date - b.date)}
-    if (todosTimeFilter === 'f') {
-        renderedTodos.sort((a, b) => b.date - a.date)}  
-
     setFilteredTodos(renderedTodos)
     
   }, [todos,todosStatus,todosTimeFilter]);
 
   useEffect(() => {
-    //рендер по изменению глобального стейта при фильтрации внутри пагинации
     setCurrentPage(currentPage);
   }, [filteredTodos]);
 
@@ -69,28 +64,26 @@ function App() {
     setTodos(todos); //задаем стейт из отредактированного
   };
 
-  const chekTodo = (id) => {
-    // ставим статус выполненно
-    const checkedTodos = todos.map((todo) => {
-      // создаем новый массив из стейта
-      if (todo.id === id) {
-        // если айди поста в стейте совпадает с выбранным
-        todo.checked = !todo.checked; // меняем атрибут checked в выбранном посте
-      }
-      return todo; // если не совпадает, возвращаем без изменений
-    });
-    setTodos(checkedTodos); // обновляем стейт
-  };
+  const chekTodo = (id) => setTodos(todos.filter((todo)=>todo.id === id ? todo.checked = !todo.checked : todo)) 
+  // {
+  //   // ставим статус выполненно
+  //   const checkedTodos = todos.map((todo) => {
+  //     if (todo.id === id) {
+  //       todo.checked = !todo.checked
+  //     }
+  //     return todo;
+  //   });
+  //   setTodos(checkedTodos); // обновляем стейт
+  // };
+
+  // setTodos(todos.map(todo)=>todo.id === id ? todo.shecked = !todo.checked : todo)
 
   const dateFilter = (key) => setTodosTimeFilter(key)
 
 
   const statusFilter = (key) => setTodosStatus(key)
 
-  const deleteTodo = (id) => {
-    //удаляем пост
-    setTodos(todos.filter((todo) => todo.id !== id)); // спредим массив в новый массив, в котором оставляем только посты, которые не совпадают по айди с выбранным
-  };
+  const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber); // переключение по страницам - принимаем номер страницы и записываем его в стейт текущей страницы для отображения
 

@@ -28,7 +28,6 @@ const Scroll = ({ paginate, postsNumber, currentPage }) => {
     setActiveBtn(number);
   };
 
-  // if (pageNumbers.length <= 1) return null;
 
   return (
     <div className={s.pages}>
