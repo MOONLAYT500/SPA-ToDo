@@ -19,15 +19,16 @@ function App() {
   const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); //текущая страница, вырезаем из массива постов элементы с певого по последний и получаем подмассив с количеством постов 5 и нужными индексами
   useEffect(() => {
     let renderedTodos = [...todos]
-
-    if (todosStatus === 'a') {
-      setFilteredTodos(renderedTodos)}
+    // фильтры по checked 
+    if (todosStatus === 'a') setFilteredTodos(renderedTodos)
     if (todosStatus === 'd') {
       renderedTodos = todos.filter((todo) => todo.checked === true)
-      setCurrentPage(1)}
+      setCurrentPage(1)
+    }
     if (todosStatus === 'u') {
       renderedTodos = todos.filter((todo) => todo.checked === false)
-      setCurrentPage(1)}
+      setCurrentPage(1)
+    }
     
     if (todosTimeFilter === 'o') {
         renderedTodos.sort((a, b) => a.date - b.date)}
@@ -56,9 +57,8 @@ function App() {
     if (!todo.text || /^\s*$/.test(todo.text)) {
       return; // убираем лишние пробелы и пустую строку
     }
-
-    // const newTodos = [todo, ...todos]; //добавляем новую задачу и спредим в новый массив задач старый массив
     setTodos([todo, ...todos]); // задаем массив новых задач стейту
+    
   };
 
   const editTodo = (input, id) => {
@@ -82,20 +82,10 @@ function App() {
     setTodos(checkedTodos); // обновляем стейт
   };
 
-  const dateFilter = (key) => {
-    if (key === 'o') {setTodosTimeFilter(key)}
-    if (key === 'f') {setTodosTimeFilter(key)}
-  };
+  const dateFilter = (key) => setTodosTimeFilter(key)
 
-  const statusFilter = (key) => {
-    if (key === 'a') setTodosStatus(key)
-    if (key === 'd') {setCurrentPage(1) 
-      setTodosStatus(key)}
-    if (key === 'u') {
-      setCurrentPage(1)
-      setTodosStatus(key)
-    }
-  };
+
+  const statusFilter = (key) => setTodosStatus(key)
 
   const deleteTodo = (id) => {
     //удаляем пост
