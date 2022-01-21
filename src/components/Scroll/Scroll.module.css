@@ -4,7 +4,7 @@
   align-items: center;
 }
 
-.pageButton {
+.pages>button {
   cursor: pointer;
   background-color: rgba(221, 235, 227, 0.26);
   border: 1px solid rgb(177, 171, 171);
@@ -12,11 +12,11 @@
   margin-right: 1px;
 }
 
-.pageButton:first-of-type {
+.pages>button:first-of-type {
   border-radius: 10% 0 0 10%;
 }
 
-.pageButton:last-of-type {
+.pages>button:last-of-type {
   border-radius: 0 10% 10% 0;
 }
 

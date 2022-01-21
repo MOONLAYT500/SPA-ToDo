@@ -20,7 +20,8 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
   const handleKeyDown = (e) => {
     if (e.keyCode == 13) {
       handlerSubmit(e);
-    } else if (e.keyCode == 27) {
+    } 
+    if (e.keyCode == 27) {
       setInput(todo.text);
       e.target.blur();
     }

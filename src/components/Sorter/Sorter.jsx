@@ -1,12 +1,18 @@
-import { useState } from 'react/cjs/react.development';
+import { useEffect, useState } from 'react/cjs/react.development';
 import s from './Sorter.module.css';
 
 const Sorter = ({
   statusFilter,
   dateFilter,
+  todosStatus,
+  checkedTodos,
+  unCheckedTodos,
 }) => {
-  const [activeStatus, setActiveStatus] = useState('a');
+  const [activeStatus, setActiveStatus] = useState(todosStatus);
   const [activeDate, setActiveDate] = useState('f');
+  useEffect(()=>{
+    setActiveStatus(todosStatus)
+  },[todosStatus])
 
   const timeFilter = (e) => {
     dateFilter(e.target.id);
@@ -14,9 +20,12 @@ const Sorter = ({
   };
 
   const chekedFilter = (e) => {
-    setActiveStatus(e.target.id);
     statusFilter(e.target.id)
+    setActiveStatus(e.target.id);
   };
+
+
+
 
   return (
     <div className={s.sort}>
@@ -25,7 +34,7 @@ const Sorter = ({
           id='a'
           className={
             activeStatus === 'a'
-              ? `${s.sortButton} ${s.sortButtonActive}`
+              ? s.sortButtonActive
               : s.sortButton
           }
           onClick={chekedFilter}
@@ -35,9 +44,10 @@ const Sorter = ({
         </button>
         <button
           id='d'
+          disabled={checkedTodos.length === 0 ? 'disabled' : ''}
           className={
             activeStatus === 'd'
-              ? `${s.sortButton} ${s.sortButtonActive}`
+              ?s.sortButtonActive
               : s.sortButton
           }
           onClick={chekedFilter}
@@ -46,9 +56,10 @@ const Sorter = ({
         </button>
         <button
           id='u'
+          disabled={unCheckedTodos.length === 0 ? 'disabled' : ''}
           className={
             activeStatus === 'u'
-              ? `${s.sortButton} ${s.sortButtonActive}`
+              ? s.sortButtonActive
               : s.sortButton
           }
           onClick={chekedFilter}

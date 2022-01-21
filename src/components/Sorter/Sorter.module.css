@@ -17,6 +17,11 @@
 }
 
 .sortButtonActive {
+  background: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
   color: red;
   border-bottom: 3px solid red;
 }

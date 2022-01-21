@@ -9,18 +9,12 @@ const Scroll = ({ paginate, postsNumber, currentPage }) => {
   }, [currentPage]);
 
   const pageNumbers = [];
-  //new Array(postsNumber / 5).fill([]);
 
   for (let i = 1; i <= Math.ceil(postsNumber / 5); i++) {
-    //динамическое получение количесива страниц , зависит от общего количества элементов и элементов на одной странице
-    pageNumbers.push(i); //пушим страницу в массив
+    pageNumbers.push(i);
   }
 
-  const lastPageNumber = (pageNumber) => {
-    if (pageNumber > 1) return pageNumber;
-  };
-
-  //const lastPageNumber = (pageNumber) => pageNumber > 1 && pageNumber;
+  const lastPageNumber = (pageNumber) => pageNumber > 1 && pageNumber;
   
 
   const handlerClick = (number) => {
@@ -37,19 +31,15 @@ const Scroll = ({ paginate, postsNumber, currentPage }) => {
         }}
         className={
           activeBtn === 1
-            ? ` ${s.pageButton} ${s.pageButtonActive}`
-            : s.pageButton
+              ? s.pageButtonActive
+              : undefined
         }
       >
         First
       </button>
       {pageNumbers.map((number) => (
         <button
-          className={
-            activeBtn === number
-              ? ` ${s.pageButton} ${s.pageButtonActive}`
-              : s.pageButton
-          }
+          className={activeBtn === number ? s.pageButtonActive: undefined}
           key={number}
           onClick={() => {
             handlerClick(number);
@@ -61,8 +51,8 @@ const Scroll = ({ paginate, postsNumber, currentPage }) => {
       <button
         className={
           lastPageNumber(pageNumbers.length) === activeBtn
-            ? ` ${s.pageButton} ${s.pageButtonActive}`
-            : s.pageButton
+            ?s.pageButtonActive
+            : undefined
         }
         onClick={() => {
           handlerClick(pageNumbers.length);

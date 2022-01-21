@@ -6,20 +6,21 @@ import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
 
 function App() {
-  const [todos, setTodos] = useState([]); //глобальный стейт, в который приходит пост после создания
-  const [filteredTodos, setFilteredTodos] = useState(todos); // отфильтрованные по статусу посты в начальном стейте , меняються по выполненным/не выполненным
-  const [currentPage, setCurrentPage] = useState(1); // текущая страница отображения постов
+  const [todos, setTodos] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState(todos);
+  const [currentPage, setCurrentPage] = useState(1);
   const [todosStatus, setTodosStatus] = useState('a')
   const [todosTimeFilter, setTodosTimeFilter] = useState('f')
-  const [todoDelete, setTodoDelete] = useState()
-
-  const lastTodoIndex = currentPage * 5; //индекс последнего элемента на странице -умножаем текущую страницу на количетво постов на странице
-  const firstTodoIndex = lastTodoIndex - 5; //индекс первого элемента - послдений элемент минус количество на странице
-  const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); //текущая страница, вырезаем из массива постов элементы с певого по последний и получаем подмассив с количеством постов 5 и нужными индексами
+  const lastTodoIndex = currentPage * 5; 
+  const firstTodoIndex = lastTodoIndex - 5; 
+  const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); 
+  
   useEffect(() => {
-    let renderedTodos = [...todos]
+    let renderedTodos = []
+    
+
     // checked filters 
-    {if (todosStatus === 'a') setFilteredTodos(renderedTodos)
+    {if (todosStatus === 'a') renderedTodos.push(...todos)
     if (todosStatus === 'd') {
       renderedTodos = todos.filter((todo) => todo.checked === true)
       setCurrentPage(1)
@@ -28,32 +29,34 @@ function App() {
       renderedTodos = todos.filter((todo) => todo.checked === false)
       setCurrentPage(1)
     }}
+    
     // date filters  
     todosTimeFilter === 'o' ? renderedTodos.sort((a, b) => a.date - b.date) :  renderedTodos.sort((a, b) => b.date - a.date) 
     
-    setFilteredTodos(renderedTodos)
+    if(renderedTodos.length === 0) setTodosStatus('a')
     
+    setFilteredTodos(renderedTodos)  
   }, [todos,todosStatus,todosTimeFilter]);
 
   useEffect(() => {
+    
     setCurrentPage(currentPage);
   }, [filteredTodos]);
 
-  const createTodo = (input) => {
-    //создание задачи
-    const todo = {
-      // формируем задачу
-      id: Math.trunc(Math.random() * 10000), //рандомный айдишник
-      text: input, //получаем текст из инпута
-      date: new Date(), // создаем новую дату
-      checked: false, // задаем посту то, что он не выполнен
-    };
 
+  
+
+  const createTodo = (input) => {
+    const todo = {
+      id: Math.trunc(Math.random() * 10000),
+      text: input,
+      date: new Date(),
+      checked: false,
+    };
     if (!todo.text || /^\s*$/.test(todo.text)) {
       return; // убираем лишние пробелы и пустую строку
     }
-    setTodos([todo, ...todos]); // задаем массив новых задач стейту
-    
+    setTodos([todo, ...todos]);
   };
 
   const editTodo = (input, id) => {
@@ -65,18 +68,10 @@ function App() {
   };
 
   const chekTodo = (id) => setTodos(todos.filter((todo)=>todo.id === id ? todo.checked = !todo.checked : todo)) 
-  // {
-  //   // ставим статус выполненно
-  //   const checkedTodos = todos.map((todo) => {
-  //     if (todo.id === id) {
-  //       todo.checked = !todo.checked
-  //     }
-  //     return todo;
-  //   });
-  //   setTodos(checkedTodos); // обновляем стейт
-  // };
 
-  // setTodos(todos.map(todo)=>todo.id === id ? todo.shecked = !todo.checked : todo)
+  const checkedTodos=todos.filter(todo=>todo.checked === true)
+  const unCheckedTodos=todos.filter(todo=>todo.checked === false)
+  
 
   const dateFilter = (key) => setTodosTimeFilter(key)
 
@@ -85,7 +80,7 @@ function App() {
 
   const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber); // переключение по страницам - принимаем номер страницы и записываем его в стейт текущей страницы для отображения
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (filteredTodos.length !== 0 && currentTodos.length === 0) {
     paginate(currentPage - 1);
@@ -96,7 +91,12 @@ function App() {
       <h1 className="header">To-Do List</h1>
       <div className="container">
         <Creator createTodo={createTodo} />
-        <Sorter statusFilter={statusFilter} dateFilter={dateFilter} />
+        <Sorter 
+          todosStatus={todosStatus} 
+          statusFilter={statusFilter} 
+          dateFilter={dateFilter}
+          checkedTodos={checkedTodos}
+          unCheckedTodos ={unCheckedTodos}/>
         <Tasks
           editTodo={editTodo}
           deleteTodo={deleteTodo}
