@@ -3,7 +3,7 @@ import s from './Sorter.module.css';
 
 const Sorter = ({
   statusFilter,
-  dateFilter,
+  createdAtFilter,
   todosStatus,
   checkedTodos,
   unCheckedTodos,
@@ -15,7 +15,7 @@ const Sorter = ({
   },[todosStatus])
 
   const timeFilter = (e) => {
-    dateFilter(e.target.id);
+    createdAtFilter(e.target.id);
     setActiveDate(e.target.id);
   };
 

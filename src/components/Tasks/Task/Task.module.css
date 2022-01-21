@@ -26,7 +26,7 @@
   filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 }
 
-.taskText {
+.taskName {
   appearance: none;
   border: none;
   outline: none;
@@ -36,11 +36,11 @@
   text-align: left;
 }
 
-.taskText::placeholder {
+.taskName::placeholder {
   color: rgb(0, 0, 0);
 }
 
-.taskText:focus {
+.taskName:focus {
   outline: none;
   border: 1px solid black;
   border-radius: 15px;
@@ -81,7 +81,7 @@
     
     width: 97%;
   }
-  .taskText{
+  .taskName{
     text-align: center;
     margin-left: 0px;
   }

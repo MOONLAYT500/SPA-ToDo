@@ -16,7 +16,7 @@ const Tasks = ({
         chekTodo={chekTodo}
         editTodo={editTodo}
         deleteTodo={deleteTodo}
-        key={todo.id}
+        key={todo.uuid}
       />
       ))}
     </div>
