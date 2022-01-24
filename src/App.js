@@ -7,6 +7,7 @@ import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
 
 function App() {
+  // const [todos, setTodos] = useState([]);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [todosStatus, setTodosStatus] = useState('all');
@@ -28,6 +29,17 @@ function App() {
   }, [currentPage,todosStatus,createdAt]);
 
     console.log(currentPage);
+  // useEffect(() => {
+  //   let renderedTodos = todos;
+  //   getTodos(todosStatus,createdAt,postsPerPage,currentPage)
+  //   // if (renderedTodos.length === 0) setTodosStatus('a'); не забыыыть
+
+  //   setFilteredTodos(renderedTodos);
+  // }, [currentPage,todosStatus,createdAt]);
+
+  // useEffect(() => {
+  //   setCurrentPage(currentPage);
+  // }, [filteredTodos]);
 
   const getTodos = async (filterBy,order,pp,page) => {
     try {
@@ -40,7 +52,6 @@ function App() {
       console.log(res);
       setFilteredTodos(res.data.tasks);
       setTodosCount(res.data.count);
-      setPostsPerPage(res.config.params.pp)
     } catch (e) {
       if (e.res) {
         alert(e.res.data);
