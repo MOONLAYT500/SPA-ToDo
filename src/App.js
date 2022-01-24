@@ -7,103 +7,102 @@ import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState(todos);
-  const [loading, setLoading] = useState(false);
+  const [filteredTodos, setFilteredTodos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [todosStatus, setTodosStatus] = useState('a');
-  const [todosTimeFilter, setTodosTimeFilter] = useState('f');
-  const lastTodoIndex = currentPage * 5;
-  const firstTodoIndex = lastTodoIndex - 5;
+  const [todosStatus, setTodosStatus] = useState('all');
+  const [createdAt,setCreatedAt] = useState('desc')
+  const [todosCount,setTodosCount] =useState()
+  const [postsPerPage,setPostsPerPage] = useState(5);
+  const lastTodoIndex = currentPage * postsPerPage;
+  const firstTodoIndex = lastTodoIndex - postsPerPage;
   const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex);
+  const api = axios.create({
+    baseURL: 'https://todo-api-learning.herokuapp.com/v1/',
+  });
 
-  useEffect(()=>{
-    const getTodos = async () => {
-      setLoading(true);
-      const res = await axios.get(
-        'https://todo-api-learning.herokuapp.com/v1/tasks/3?pp=10'
-      );
-      setTodos(res.data)
-      setLoading(false)
-    };
-  
+  useEffect(() => {
+    getTodos(todosStatus,createdAt,postsPerPage,currentPage);
+
+    setFilteredTodos(filteredTodos)
+    setCurrentPage(currentPage)
+  }, [currentPage,todosStatus,createdAt]);
+
+    console.log(currentPage);
+
+  const getTodos = async (filterBy,order,pp,page) => {
+    try {
+      const res = await api.get(`tasks/3`,{params:{
+        filterBy: filterBy === 'all' ? '' : filterBy,
+        order: order,
+        pp:pp,
+        page:page
+      }})
+      console.log(res);
+      setFilteredTodos(res.data.tasks);
+      setTodosCount(res.data.count);
+      setPostsPerPage(res.config.params.pp)
+    } catch (e) {
+      if (e.res) {
+        alert(e.res.data);
+        alert(e.res.status);
+        alert(e.res.headers);
+      } else alert(`Error: ${e.message}`);
+    }
+  };
+
+
+
+  const createTodo = async (input) => {
+    try {
+      const todo = {
+        name: input,
+        done: false,
+      };
+      if (!todo.name || /^\s*$/.test(todo.name)) {
+        return;
+      }
+      await api.post(`task/3`, todo);
+      getTodos();
+    } catch (e) {
+      alert(`Error: ${e.message}`);
+    }
+  };
+
+  const chekTodo = async (id, status) => {
+    await api.patch(`task/3/${id}`, { done: status });
     getTodos();
-  },[])
-  
-  useEffect(() => {
-
-    let renderedTodos = []
-    // checked filters
-    {
-      if (todosStatus === 'a') renderedTodos.push(...todos);
-      if (todosStatus === 'd') {
-        renderedTodos = todos.filter((todo) => todo.done === true);
-        setCurrentPage(1);
-      }
-      if (todosStatus === 'u') {
-        renderedTodos = todos.filter((todo) => todo.done === false);
-        setCurrentPage(1);
-      }
-    }
-    // createdAt filters
-    todosTimeFilter === 'o'
-      ? renderedTodos.sort((a, b) => a.createdAt - b.createdAt)
-      : renderedTodos.sort((a, b) => b.createdAt - a.createdAt);
-
-    if (renderedTodos.length === 0) setTodosStatus('a');
-
-    setFilteredTodos(renderedTodos);
-  }, [todos, todosStatus, todosTimeFilter]);
-
-  useEffect(() => {
-    setCurrentPage(currentPage);
-  }, [filteredTodos]);
-
-  const createTodo = (input) => {
-    const todo = {
-      uuid: Math.trunc(Math.random() * 10000),
-      name: input,
-      createdAt: new Date(),
-      done: false,
-      updatetAt: '',
-    };
-    if (!todo.name || /^\s*$/.test(todo.name)) {
-      return; // убираем лишние пробелы и пустую строку
-    }
-    setTodos([todo, ...todos]);
   };
 
-  const editTodo = (input, id) => {
-    //редактируем пост -надо изменить функцию
-    const n = todos.find((todo) => todo.uuid == id); // ищем пост, который редактируем в массиве
-    n.name = input; //задаем новое значене тексту задачи в найденном посте
-    todos.map((obj) => obj.name === input); // меняем пост в массиве
-    setTodos(todos); //задаем стейт из отредактированного
+  const deleteTodo = async (id) => {
+    try {
+      await api.delete(`task/3/${id}`);
+      getTodos();
+    } catch (e) {
+      alert(`Error: ${e.message}`);
+    }
   };
 
-  const chekTodo = (id) =>
-    setTodos(
-      todos.filter((todo) => (todo.uuid === id ? (todo.done = !todo.done) : todo))
-    );
+  const editTodo = async(input, id) => {
+    try {
+      await api.patch(`task/3/${id}`, { name: input });
+      getTodos();
+    } catch (e) {
+      alert(`Error: ${e.message}`);
+    }
+  };
 
-  const checkedTodos = todos.filter((todo) => todo.done === true);
-  const unCheckedTodos = todos.filter((todo) => todo.done === false);
-
-  const createdAtFilter = (key) => setTodosTimeFilter(key);
+  const createdAtFilter = async(key) => setCreatedAt(key)
 
   const statusFilter = (key) => setTodosStatus(key);
 
-  const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.uuid !== id));
-
+  const checkedTodos = filteredTodos.filter((todo) => todo.done === true);
+  const unCheckedTodos = filteredTodos.filter((todo) => todo.done === false);
+  
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  if (filteredTodos.length !== 0 && currentTodos.length === 0) {
-    paginate(currentPage - 1);
-  }
-
-  console.log(1);
-  console.log(todos);
-
+  // if (filteredTodos.length !== 0 && currentTodos.length === 0) {
+  //   paginate(currentPage - 1);
+  // }
   return (
     <div className="body">
       <h1 className="header">To-Do List</h1>
@@ -116,7 +115,7 @@ function App() {
           checkedTodos={checkedTodos}
           unCheckedTodos={unCheckedTodos}
         />
-        {filteredTodos.length === 0 ? (
+        {todosCount === 0 ? (
           <div>No Tasks</div>
         ) : (
           <Tasks
@@ -127,10 +126,10 @@ function App() {
             currentTodos={currentTodos}
           />
         )}
-        {filteredTodos.length > 5 && (
+        {todosCount > 5 && (
           <Scroll
             paginate={paginate}
-            postsNumber={filteredTodos.length}
+            postsNumber={todosCount}
             currentPage={currentPage}
           />
         )}
@@ -140,5 +139,3 @@ function App() {
 }
 
 export default App;
-
-// по максимуму рефакторить - но лушче переходить к беку и апишке

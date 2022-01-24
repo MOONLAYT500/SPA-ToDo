@@ -4,11 +4,9 @@ import s from './Task.module.css';
 const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
   const [input, setInput] = useState(todo.name);
 
-  // const dateToString = (createdAt) => {
-  //   return `${createdAt.getHours()}:${createdAt.getMinutes() < 10 ? '0'+createdAt.getMinutes() : createdAt.getMinutes()}:${createdAt.getSeconds() < 10 ? '0'+createdAt.getSeconds() : createdAt.getSeconds()} ${createdAt.getDate()}/${createdAt.getMonth() < 9 ? '0'+(createdAt.getMonth() + 1) : createdAt.getMonth() + 1}/${createdAt.getFullYear()} `;
-
-  // };
-
+  const dateToString = (createdAt) => {
+    return `${createdAt.getHours()}:${createdAt.getMinutes() < 10 ? '0'+createdAt.getMinutes() : createdAt.getMinutes()}:${createdAt.getSeconds() < 10 ? '0'+createdAt.getSeconds() : createdAt.getSeconds()} ${createdAt.getDate()}/${createdAt.getMonth() < 9 ? '0'+(createdAt.getMonth() + 1) : createdAt.getMonth() + 1}/${createdAt.getFullYear()} `;
+  };
 
 
   const handlerSubmit = (e) => {
@@ -30,7 +28,11 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
 
   const editName = (e) => setInput(e.target.value);
 
-  let doneCheck = () => chekTodo(todo.uuid);
+  let doneCheck = () => {
+    const status = !todo.done
+    chekTodo(todo.uuid,status)
+  }
+
 
   const todoDelete = () => deleteTodo(todo.uuid);
 
@@ -56,7 +58,7 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
       </form>
       </div>
       <div className={s.taskPart}>
-      {/* <span className={s.taskDate}>{dateToString(todo.createdAt)}</span> */}
+      <span className={s.taskDate}>{dateToString((new Date(todo.createdAt)))}</span>
       <button className={s.deleteTask} onClick={todoDelete}></button>
       </div>
     </div>

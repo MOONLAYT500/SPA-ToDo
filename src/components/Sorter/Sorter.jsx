@@ -8,8 +8,8 @@ const Sorter = ({
   checkedTodos,
   unCheckedTodos,
 }) => {
-  const [activeStatus, setActiveStatus] = useState(todosStatus);
-  const [activeDate, setActiveDate] = useState('f');
+  const [activeStatus, setActiveStatus] = useState('all');
+  const [activeDate, setActiveDate] = useState('desc');
   useEffect(()=>{
     setActiveStatus(todosStatus)
   },[todosStatus])
@@ -31,9 +31,9 @@ const Sorter = ({
     <div className={s.sort}>
       <div className={s.sortMenuButtons}>
         <button
-          id='a'
+          id='all'
           className={
-            activeStatus === 'a'
+            activeStatus === 'all'
               ? s.sortButtonActive
               : s.sortButton
           }
@@ -43,10 +43,10 @@ const Sorter = ({
           All
         </button>
         <button
-          id='d'
+          id='done'
           disabled={checkedTodos.length === 0 ? 'disabled' : ''}
           className={
-            activeStatus === 'd'
+            activeStatus === 'done'
               ?s.sortButtonActive
               : s.sortButton
           }
@@ -55,10 +55,10 @@ const Sorter = ({
           Done
         </button>
         <button
-          id='u'
+          id='undone'
           disabled={unCheckedTodos.length === 0 ? 'disabled' : ''}
           className={
-            activeStatus === 'u'
+            activeStatus === 'undone'
               ? s.sortButtonActive
               : s.sortButton
           }
@@ -71,18 +71,18 @@ const Sorter = ({
         <div className={s.sortDataText}>Sort by Date</div>
         <div>
           <button
-          id='o'
+          id='asc'
             className={
-              activeDate === 'o'
+              activeDate === 'asc'
                 ? `${s.sortDateButton} ${s.sortDateButtonActive}`
                 : s.sortDateButton
             }
             onClick={timeFilter}
           ></button>
           <button
-          id='f'
+          id='desc'
             className={
-              activeDate === 'f'
+              activeDate === 'desc'
                 ? `${s.sortDateButton} ${s.sortDateButtonActive}`
                 : s.sortDateButton
             }
