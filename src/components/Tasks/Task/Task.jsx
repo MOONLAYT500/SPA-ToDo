@@ -30,7 +30,8 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
 
   let doneCheck = () => {
     const status = !todo.done
-    chekTodo(todo.uuid,status)
+    const name = todo.name
+    chekTodo(todo.uuid,status,name)
   }
 
 

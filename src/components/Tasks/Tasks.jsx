@@ -3,14 +3,14 @@ import Task from './Task/Task';
 
 
 const Tasks = ({
-  currentTodos,
+  filteredTodos,
   chekTodo,
   editTodo,
   deleteTodo,
 }) => {
   return (
     <div className={s.tasks}>
-      {currentTodos.map((todo) => (
+      {filteredTodos.map((todo) => (
       <Task
         todo={todo}
         chekTodo={chekTodo}
