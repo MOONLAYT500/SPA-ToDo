@@ -26,15 +26,14 @@ function App() {
       postsPerPage,
       currentPage
     );
-      
+    
+    // if(res.data.tasks.length === 0) setTodosStatus('all')
+    if(res.data.tasks.length === 0 && currentPage >1) setCurrentPage(currentPage-1)
     setTodosCount(res.data.count);
     setFilteredTodos(res.data.tasks);
+
   }, [todosStatus, createdAt,currentPage, change]);
 
-  
-  if (filteredTodos.length === 0){
-    console.log(filteredTodos);
-  }
   const getTodos = async (filterBy, order, pp, page) => {
     try {
       const res = await api.get(`tasks/3`, {
@@ -46,6 +45,7 @@ function App() {
         },
       });
       return res;
+      
     } catch (e) {
       if (e.res) {
         alert(e.res.data);
@@ -87,10 +87,10 @@ function App() {
   const deleteTodo = async (id) => {
     try {
       await api.delete(`task/3/${id}`);
-      setChange([]);
     } catch (e) {
       alert(`Error: ${e.message}`);
     }
+    setChange([]);
   };
 
   const editTodo = async (input, id) => {
@@ -113,6 +113,8 @@ function App() {
     getTodos(todosStatus, createdAt, postsPerPage, pageNumber);
     setCurrentPage(pageNumber);
   };
+
+
 
   return (
     <div className="body">
