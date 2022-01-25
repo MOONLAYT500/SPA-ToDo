@@ -1,30 +1,27 @@
+import { Input } from 'antd';
 import React, { useState } from 'react';
-import s from './Creator.module.css';
+import { SaveTwoTone } from '@ant-design/icons/lib/icons';
 
 const Creator = ({ createTodo }) => {
   const [input, setInput] = useState('');
 
-  const handlerChange = (e) => {
-    setInput(e.target.value);
-  };
+  const handlerChange = (e) => setInput(e.target.value);
+
 
   const handlerSubmit = (e) => {
-    e.preventDefault();
     createTodo(input);
     setInput('');
   };
 
   return (
-    <form className={s.inputBlock} onSubmit={handlerSubmit}>
-      <input
-        className={s.inputBar}
-        type="text"
+    <Input  
+        style={{marginBottom: 20, borderRadius: 10,'border': 'none'}}
+        suffix={<SaveTwoTone twoToneColor='red'/>}
         placeholder="I want to do..."
         value={input}
         onChange={handlerChange}
-        autoFocus
-      />
-    </form>
+        onPressEnter={handlerSubmit}
+        />
   );
 };
 

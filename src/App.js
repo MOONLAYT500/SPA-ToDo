@@ -5,6 +5,8 @@ import Creator from './components/Creator/Creator';
 import Scroll from './components/Scroll/Scroll';
 import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
+import { Pagination } from 'antd';
+import 'antd/dist/antd.css';
 
 function App() {
   const [filteredTodos, setFilteredTodos] = useState([]);
@@ -105,15 +107,10 @@ function App() {
 
   const statusFilter = (key) => setTodosStatus(key);
 
-  const checkedTodos = filteredTodos.filter((todo) => todo.done === true);
-  const unCheckedTodos = filteredTodos.filter((todo) => todo.done === false);
-
   const paginate = (pageNumber) => {
     getTodos(todosStatus, createdAt, postsPerPage, pageNumber);
     setCurrentPage(pageNumber);
   };
-
-
 
   return (
     <div className="body">
@@ -124,8 +121,6 @@ function App() {
           todosStatus={todosStatus}
           statusFilter={statusFilter}
           createdAtFilter={createdAtFilter}
-          checkedTodos={checkedTodos}
-          unCheckedTodos={unCheckedTodos}
         />
         {todosCount === 0 ? (
           <div>No Tasks</div>
@@ -138,10 +133,11 @@ function App() {
           />
         )}
         {todosCount > 5 && (
-          <Scroll
-            paginate={paginate}
-            postsNumber={todosCount}
-            currentPage={currentPage}
+          <Pagination 
+            current={currentPage} 
+            pageSize={postsPerPage} 
+            onChange={paginate} 
+            total={todosCount}
           />
         )}
       </div>
