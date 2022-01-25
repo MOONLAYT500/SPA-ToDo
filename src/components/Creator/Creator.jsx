@@ -24,7 +24,6 @@ const Creator = ({ createTodo }) => {
         onChange={handlerChange}
         autoFocus
       />
-      <button className={s.addTask}>ADD</button>
     </form>
   );
 };

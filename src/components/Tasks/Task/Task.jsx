@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Checkbox } from 'antd';
 import s from './Task.module.css';
 
 const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
@@ -30,8 +31,7 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
 
   let doneCheck = () => {
     const status = !todo.done
-    const name = todo.name
-    chekTodo(todo.uuid,status,name)
+    chekTodo(todo.uuid,status)
   }
 
 
@@ -40,14 +40,15 @@ const Task = ({ todo, deleteTodo, chekTodo, editTodo }) => {
   return (
     <div className={s.task}>
       <div className={s.taskPart}>
-      <input
+        <Checkbox checked={todo.done}  onChange={doneCheck}/>
+      {/* <input
         className={s.taskCheck}
         type="checkbox"
         name="task-check"
         id="taskCheck"
         checked={todo.done}
         onChange={doneCheck}
-      />
+      /> */}
       <form className={s.taskName} onSubmit={handlerSubmit}>
         <input
           type="text"

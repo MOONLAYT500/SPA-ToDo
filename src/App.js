@@ -7,7 +7,6 @@ import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
 
 function App() {
-  // const [todos, setTodos] = useState([]);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [todosStatus, setTodosStatus] = useState('all');
@@ -73,9 +72,9 @@ function App() {
     setChange([]);
   };
 
-  const chekTodo = async (id, status,name) => {
+  const chekTodo = async (id, status) => {
     try {
-      await api.patch(`task/3/${id}`, { done: status, name:name });
+      await api.patch(`task/3/${id}`, { done: status});
     } catch (e) {
       alert(e.res.data);
       alert(e.res.status);

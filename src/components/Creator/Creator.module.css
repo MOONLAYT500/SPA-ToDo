@@ -6,7 +6,7 @@
 
 .inputBar {
   width: 100%;
-  border-radius: 5px 0 0 5px;
+  border-radius: 5px;
   border: none;
 }
 
@@ -14,13 +14,3 @@
   outline: none;
 }
 
-.addTask {
-  background-color: white;
-  border: none;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-}
-
-.addTask:hover {
-  color: red;
-}
