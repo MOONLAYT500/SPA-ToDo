@@ -12,51 +12,56 @@ function App() {
   const [todosStatus, setTodosStatus] = useState('all');
   const [createdAt, setCreatedAt] = useState('desc');
   const [todosCount, setTodosCount] = useState(0);
-  const [change, setChange] = useState([]);
   const [postsPerPage, setPostsPerPage] = useState(5);
   const api = axios.create({
     baseURL: 'https://todo-api-learning.herokuapp.com/v1/',
   });
 
   useEffect(async () => {
-    const res = await getTodos(
+    await getTodos();
+    // if(res.data.tasks.length === 0) setTodosStatus('all')
+  }, [todosStatus, createdAt, currentPage]);
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      let errorMessage;
+      let res = error.request.response;
+      if (!res) {
+        errorMessage = 'No responce';
+      }
+      if (res === undefined) {
+      }
+      if (error.response) {
+        errorMessage = `${error.response.status}: ${error.response.data.message}`;
+      }
+      message.error(errorMessage);
+    }
+  );
+
+  const getTodos = async () => {
+    console.log(
+      '@@@@@@@@@@',
       todosStatus,
       createdAt,
       postsPerPage,
       currentPage
     );
-    // if(res.data.tasks.length === 0) setTodosStatus('all')
-    if (res.data.tasks.length === 0 && currentPage > 1)
-      setCurrentPage(currentPage - 1);
-    setTodosCount(res.data.count);
-    setFilteredTodos(res.data.tasks);
-  }, [todosStatus, createdAt, currentPage, change]);
-
-  api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      let errorMessage
-      let res= error.request.response
-      if(!res){errorMessage = 'No responce'}
-      if(res === undefined){}  
-      if (error.response) {
-        errorMessage = `${error.response.status}: ${error.response.data. 
-          message}`}
-      message.error(errorMessage)    
-    }
-  );
-
-  const getTodos = async (filterBy, order, pp, page) => {
     try {
       const res = await api.get(`tasks/3`, {
         params: {
-          filterBy: filterBy === 'all' ? '' : filterBy,
-          order: order,
-          pp: pp,
-          page: page,
+          filterBy: todosStatus === 'all' ? '' : todosStatus,
+          order: createdAt,
+          pp: postsPerPage,
+          page: currentPage,
         },
       });
-      return res;
+      if (res.data.tasks.length === 0 && currentPage > 1)
+        setCurrentPage(currentPage - 1);
+      setTodosCount(res.data.count);
+      setFilteredTodos(res.data.tasks);
+
+      return;
     } catch (e) {
       alert(`Error: ${e.message}`);
     }
@@ -68,26 +73,30 @@ function App() {
       done: false,
     };
     if (!todo.name || /^\s*$/.test(todo.name)) {
-      message.error('Empty string not allowed')
+      message.error('Empty string not allowed');
       return;
     }
     await api.post(`task/3`, todo);
-    setChange([]);
+    await getTodos();
   };
 
   const editTodo = async (todo, id) => {
     await api.patch(`task/3/${id}`, todo);
-    setChange([]);
+    await getTodos();
   };
 
   const deleteTodo = async (id) => {
     await api.delete(`task/3/${id}`);
-    setChange([]);
+    await getTodos();
   };
 
-  const createdAtFilter = async (key) => setCreatedAt(key);
+  const createdAtFilter = async (key) => {
+    setCreatedAt(key);
+  };
 
-  const statusFilter = (key) => setTodosStatus(key);
+  const statusFilter = async (key) => {
+    setTodosStatus(key);
+  };
 
   const paginate = (pageNumber) => {
     getTodos(todosStatus, createdAt, postsPerPage, pageNumber);

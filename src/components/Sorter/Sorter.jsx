@@ -1,6 +1,5 @@
 import { Typography } from 'antd';
 import {Radio,Button } from 'antd';
-import { useState } from 'react/cjs/react.development';
 import s from './Sorter.module.css';
 import { UpCircleTwoTone, DownCircleTwoTone } from '@ant-design/icons/lib/icons';
 const { Text } = Typography;
