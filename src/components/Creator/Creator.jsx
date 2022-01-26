@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 import React, { useState } from 'react';
-import { SaveTwoTone } from '@ant-design/icons/lib/icons';
+import { EnterOutlined} from '@ant-design/icons/lib/icons';
 
 const Creator = ({ createTodo }) => {
   const [input, setInput] = useState('');
@@ -16,7 +16,7 @@ const Creator = ({ createTodo }) => {
   return (
     <Input  
         style={{marginBottom: 20, borderRadius: 10,'border': 'none'}}
-        suffix={<SaveTwoTone twoToneColor='red'/>}
+        suffix={<EnterOutlined style={{'color':'#1890ff'}}/>}
         placeholder="I want to do..."
         value={input}
         onChange={handlerChange}

@@ -1,61 +1,40 @@
-import { Button } from 'antd';
-import { useEffect, useState } from 'react/cjs/react.development';
+import { Typography } from 'antd';
+import {Radio,Button } from 'antd';
+import { useState } from 'react/cjs/react.development';
 import s from './Sorter.module.css';
+import { UpCircleTwoTone, DownCircleTwoTone } from '@ant-design/icons/lib/icons';
+const { Text } = Typography;
 
 const Sorter = ({
   statusFilter,
   createdAtFilter,
-  todosStatus,
 }) => {
-  const [activeDate, setActiveDate] = useState('desc');
-
-
-  const timeFilter = (e) => {
-    createdAtFilter(e.target.id);
-    setActiveDate(e.target.id);
-  };
-
-  const chekedFilter = (id) => statusFilter(id)
+  const chekedFilter = (e) => statusFilter(e.target.value)
   return (
     <div className={s.sort}>
-      <div className={s.sortMenuButtons}>
-        <Button
-          onClick={()=>{chekedFilter('all')}}
-          style={{ 'background': 'transparent','border':'none'}}
-        >All</Button>
-        <Button
-          id='done'
-          onClick={()=>{chekedFilter('done')}}
-          style={{ 'background': 'transparent','border':'none'}}
-        >Done</Button>
-        <Button
-          id='done'
-          onClick={()=>{chekedFilter('undone')}}
-          style={{ 'background': 'transparent','border':'none'}}
-        >Undone</Button>
-      </div>
+        <Radio.Group
+          onChange={chekedFilter}     
+          buttonStyle="solid"
+          defaultValue={'all'}
+        >
+          <Radio.Button  value={'all'}>All</Radio.Button>
+          <Radio.Button value={'done'}>Done</Radio.Button>
+          <Radio.Button value={'undone'}>Undone</Radio.Button>
+        </Radio.Group>
       <div className={s.sortByDate}>
-        <div className={s.sortDataText}>Sort by Date</div>
-        <div>
-          <button
-          id='asc'
-            className={
-              activeDate === 'asc'
-                ? `${s.sortDateButton} ${s.sortDateButtonActive}`
-                : s.sortDateButton
-            }
-            onClick={timeFilter}
-          ></button>
-          <button
-          id='desc'
-            className={
-              activeDate === 'desc'
-                ? `${s.sortDateButton} ${s.sortDateButtonActive}`
-                : s.sortDateButton
-            }
-            onClick={timeFilter}
-          ></button>
-        </div>
+        <Text style={{'paddingRight': '10px'}}>Sort by Date</Text>
+          <Button 
+            
+            onClick={()=>{createdAtFilter('asc')}}
+            icon={<UpCircleTwoTone/>}
+            type='ghost'
+          ></Button>
+          <Button 
+            autoFocus
+            onClick={()=>{createdAtFilter('desc')}}
+            icon={<DownCircleTwoTone/>}
+            type='ghost'
+          ></Button>
       </div>
     </div>
   );

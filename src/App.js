@@ -1,12 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import './App.css';
+import './App.less';
 import Creator from './components/Creator/Creator';
-import Scroll from './components/Scroll/Scroll';
 import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
-import { Pagination } from 'antd';
-import 'antd/dist/antd.css';
+import { Pagination, message } from 'antd';
 
 function App() {
   const [filteredTodos, setFilteredTodos] = useState([]);
@@ -27,13 +25,26 @@ function App() {
       postsPerPage,
       currentPage
     );
-    
     // if(res.data.tasks.length === 0) setTodosStatus('all')
-    if(res.data.tasks.length === 0 && currentPage >1) setCurrentPage(currentPage-1)
+    if (res.data.tasks.length === 0 && currentPage > 1)
+      setCurrentPage(currentPage - 1);
     setTodosCount(res.data.count);
     setFilteredTodos(res.data.tasks);
+  }, [todosStatus, createdAt, currentPage, change]);
 
-  }, [todosStatus, createdAt,currentPage, change]);
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      let errorMessage
+      let res= error.request.response
+      if(!res){errorMessage = 'No responce'}
+      if(res === undefined){}  
+      if (error.response) {
+        errorMessage = `${error.response.status}: ${error.response.data. 
+          message}`}
+      message.error(errorMessage)    
+    }
+  );
 
   const getTodos = async (filterBy, order, pp, page) => {
     try {
@@ -46,61 +57,32 @@ function App() {
         },
       });
       return res;
-      
     } catch (e) {
-      if (e.res) {
-        alert(e.res.data);
-        alert(e.res.status);
-        alert(e.res.headers);
-      } else alert(`Error: ${e.message}`);
+      alert(`Error: ${e.message}`);
     }
   };
 
-
   const createTodo = async (input) => {
-    try {
-      const todo = {
-        name: input,
-        done: false,
-      };
-      if (!todo.name || /^\s*$/.test(todo.name)) {
-        return;
-      }
-      await api.post(`task/3`, todo);
-    } catch (e) {
-      alert(`Error: ${e.message}`);
-      console.log(e.request);
+    const todo = {
+      name: input,
+      done: false,
+    };
+    if (!todo.name || /^\s*$/.test(todo.name)) {
+      message.error('Empty string not allowed')
+      return;
     }
+    await api.post(`task/3`, todo);
     setChange([]);
   };
 
-  const chekTodo = async (id, status) => {
-    try {
-      await api.patch(`task/3/${id}`, { done: status});
-    } catch (e) {
-      alert(e.res.data);
-      alert(e.res.status);
-      alert(e.res.headers);
-    }
+  const editTodo = async (todo, id) => {
+    await api.patch(`task/3/${id}`, todo);
     setChange([]);
   };
 
   const deleteTodo = async (id) => {
-    try {
-      await api.delete(`task/3/${id}`);
-    } catch (e) {
-      alert(`Error: ${e.message}`);
-    }
+    await api.delete(`task/3/${id}`);
     setChange([]);
-  };
-
-  const editTodo = async (input, id) => {
-    try {
-      await api.patch(`task/3/${id}`, { name: input });
-      setChange([]);
-    } catch (e) {
-      alert(`Error: ${e.message}`);
-    }
   };
 
   const createdAtFilter = async (key) => setCreatedAt(key);
@@ -129,17 +111,16 @@ function App() {
             editTodo={editTodo}
             deleteTodo={deleteTodo}
             filteredTodos={filteredTodos}
-            chekTodo={chekTodo}
           />
         )}
-        {todosCount > 5 && (
-          <Pagination 
-            current={currentPage} 
-            pageSize={postsPerPage} 
-            onChange={paginate} 
-            total={todosCount}
-          />
-        )}
+        <Pagination
+          style={{ marginTop: 'auto' }}
+          current={currentPage}
+          pageSize={postsPerPage}
+          onChange={paginate}
+          total={todosCount}
+          hideOnSinglePage={true}
+        />
       </div>
     </div>
   );
