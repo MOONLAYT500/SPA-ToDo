@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "homepage": "https://moonlayt500.github.io/SPA-ToDo/"
+  "homepage": "https://moonlayt500.github.io/SPA-ToDo/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
