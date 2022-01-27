@@ -5,12 +5,12 @@ import { EnterOutlined} from '@ant-design/icons/lib/icons';
 const Creator = ({ createTodo }) => {
   const [input, setInput] = useState('');
 
-  const handlerChange = (e) => setInput(e.target.value);
+  const handlerChange = (e) => setInput(e.target.value); // setting input to state
 
 
   const handlerSubmit = (e) => {
-    createTodo(input);
-    setInput('');
+    createTodo(input); // setting text to new todo from
+    setInput('');// setting empty string afret setting
   };
 
   return (

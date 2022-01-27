@@ -39,53 +39,54 @@ function App() {
     }
   );
 
-  const getTodos = async () => {
-    const res = await api.get(`tasks/3`, {
-      params: {
-        filterBy: todosStatus === 'all' ? '' : todosStatus,
-        order: createdAt,
-        pp: postsPerPage,
-        page: currentPage,
+  const getTodos = async () => { // getting todos from server
+    const res = await api.get(`tasks/3`, { //sending request 
+      params: { // form new request
+        filterBy: todosStatus === 'all' ? '' : todosStatus, // done status
+        order: createdAt, // time status
+        pp: postsPerPage, // todos on page count
+        page: currentPage, // current page to return
       },
     });
     // if(res.data.tasks.length === 0) setTodosStatus('all')
-    if (res.data.tasks.length === 0 && currentPage > 1){ 
+    if (res.data.tasks.length === 0 && currentPage > 1){ // return on previous page? if current is empty 
     setCurrentPage(currentPage - 1)}
-    setTodosCount(res.data.count);
-    setFilteredTodos(res.data.tasks);
+    
+    setTodosCount(res.data.count);//seting total todos count
+    setFilteredTodos(res.data.tasks); // sitting final todos to render
   };
 
-  const createTodo = async (input) => {
-    const todo = {
-      name: input,
-      done: false,
+  const createTodo = async (input) => { // create and post new todo to server
+    const todo = { //new todo
+      name: input, // todo text
+      done: false, // done status
     };
-    if (!todo.name || /^\s*$/.test(todo.name)) {
-      message.error('Empty string not allowed');
+    if (!todo.name || /^\s*$/.test(todo.name)) { // empty string filter
+      message.error('Empty string not allowed'); // message to client
       return;
     }
-    await api.post(`task/3`, todo);
-    await getTodos();
+    await api.post(`task/3`, todo); // posting new todo to api
+    await getTodos(); // getting all todos to render
   };
 
   const editTodo = async (todo, id) => {
-    let res = await api.patch(`task/3/${id}`, todo)
-    await getTodos();
+    let res = await api.patch(`task/3/${id}`, todo) // sending edited todo to api
+    await getTodos(); //rendering edited
     return res;
   };
 
   const deleteTodo = async (id) => {
-    await api.delete(`task/3/${id}`);
-    await getTodos();
+    await api.delete(`task/3/${id}`);// deleting todo by id
+    await getTodos(); // rendering todos after deleting
   };
 
-  const createdAtFilter = async (key) => setCreatedAt(key);
+  const createdAtFilter = async (key) => setCreatedAt(key); // setting time sattus to filter
 
-  const statusFilter = async (key) => setTodosStatus(key);
+  const statusFilter = async (key) => setTodosStatus(key); // setting done status to filter
 
   const paginate = (pageNumber) => {
-    getTodos();
-    setCurrentPage(pageNumber);
+    getTodos(); // recieving todos
+    setCurrentPage(pageNumber); //setting page to render
   };
 
   return (
@@ -113,7 +114,7 @@ function App() {
           pageSize={postsPerPage}
           onChange={paginate}
           total={todosCount}
-          hideOnSinglePage={true}
+          hideOnSinglePage={true} // hide pagination on single page
         />
       </div>
     </div>
