@@ -40,14 +40,6 @@ function App() {
   );
 
   const getTodos = async () => {
-    console.log(
-      '@@@@@@@@@@',
-      todosStatus,
-      createdAt,
-      postsPerPage,
-      currentPage
-    );
-    try {
       const res = await api.get(`tasks/3`, {
         params: {
           filterBy: todosStatus === 'all' ? '' : todosStatus,
@@ -60,11 +52,6 @@ function App() {
         setCurrentPage(currentPage - 1);
       setTodosCount(res.data.count);
       setFilteredTodos(res.data.tasks);
-
-      return;
-    } catch (e) {
-      alert(`Error: ${e.message}`);
-    }
   };
 
   const createTodo = async (input) => {
@@ -102,7 +89,7 @@ function App() {
     getTodos(todosStatus, createdAt, postsPerPage, pageNumber);
     setCurrentPage(pageNumber);
   };
-
+  
   return (
     <div className="body">
       <h1 className="header">To-Do List</h1>
