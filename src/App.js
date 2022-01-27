@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import './App.less';
+import './App.css';
 import Creator from './components/Creator/Creator';
 import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
@@ -30,8 +30,7 @@ function App() {
       if (!res) {
         errorMessage = 'No responce';
       }
-      if (res === undefined) {
-      }
+      if (res === undefined) {errorMessage = 'Client side trouble'}
       if (error.response) {
         errorMessage = `${error.response.status}: ${error.response.data.message}`;
       }
@@ -89,7 +88,7 @@ function App() {
     getTodos(todosStatus, createdAt, postsPerPage, pageNumber);
     setCurrentPage(pageNumber);
   };
-  
+
   return (
     <div className="body">
       <h1 className="header">To-Do List</h1>
