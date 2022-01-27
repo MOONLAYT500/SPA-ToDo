@@ -100,10 +100,10 @@ function App() {
           createdAtFilter={createdAtFilter}
         />
         {todosCount === 0 ? (
-          <div>No Tasks</div>
+          <div>No Tasks</div> // if filtered tasks is empty
         ) : (
           <Tasks
-            editTodo={editTodo}
+            editTodo={editTodo} 
             deleteTodo={deleteTodo}
             filteredTodos={filteredTodos}
           />

@@ -10,7 +10,7 @@ const Tasks = ({
 }) => {
   return (
     <div className={s.tasks}>
-      {filteredTodos.map((todo) => (
+      {filteredTodos.map((todo) => ( // mapping filteredTasks to component with recieved data
       <Task
         todo={todo}
         chekTodo={chekTodo}

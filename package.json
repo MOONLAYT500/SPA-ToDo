@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "homepage": "https://github.com/MOONLAYT500/To-Do-List/index.html",
+  "homepage": "https://github.com/MOONLAYT500/To-Do-List/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

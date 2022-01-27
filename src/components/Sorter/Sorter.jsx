@@ -5,10 +5,11 @@ import { UpCircleTwoTone, DownCircleTwoTone } from '@ant-design/icons/lib/icons'
 const { Text } = Typography;
 
 const Sorter = ({
-  statusFilter,
-  createdAtFilter,
+  statusFilter, // filter by status func
+  createdAtFilter, // filter by date func
 }) => {
-  const chekedFilter = (e) => statusFilter(e.target.value)
+  const chekedFilter = (e) => statusFilter(e.target.value) // setting value to sort func
+  
   return (
     <div className={s.sort}>
         <Radio.Group
