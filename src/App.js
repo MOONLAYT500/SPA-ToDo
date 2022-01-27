@@ -80,9 +80,9 @@ function App() {
     await getTodos(); // rendering todos after deleting
   };
 
-  const createdAtFilter = async (key) => setCreatedAt(key); // setting time sattus to filter
+  const createdAtFilter = (key) => setCreatedAt(key); // setting time sattus to filter
 
-  const statusFilter = async (key) => setTodosStatus(key); // setting done status to filter
+  const statusFilter = (key) => setTodosStatus(key); // setting done status to filter
 
   const paginate = (pageNumber) => {
     getTodos(); // recieving todos
@@ -95,7 +95,6 @@ function App() {
       <div className="container">
         <Creator createTodo={createTodo} />
         <Sorter
-          todosStatus={todosStatus}
           statusFilter={statusFilter}
           createdAtFilter={createdAtFilter}
         />
