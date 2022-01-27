@@ -26,8 +26,11 @@ const Task = ({ todo, deleteTodo, editTodo }) => {
       return;
     }
     setInput(input);
-    todo.name = input;
-    editTodo(todo, todo.uuid);
+    editTodo({name:input}, todo.uuid)
+    .then(res=>{if(!res){
+      setInput(todo.name)
+    }})
+    
   };
 
   let doneCheck = () => {

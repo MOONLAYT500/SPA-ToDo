@@ -7,22 +7,21 @@ import Tasks from './components/Tasks/Tasks';
 import { Pagination, message } from 'antd';
 
 function App() {
-  const [filteredTodos, setFilteredTodos] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [todosStatus, setTodosStatus] = useState('all');
-  const [createdAt, setCreatedAt] = useState('desc');
-  const [todosCount, setTodosCount] = useState(0);
-  const [postsPerPage, setPostsPerPage] = useState(5);
+  const [filteredTodos, setFilteredTodos] = useState([]);//all tasks
+  const [currentPage, setCurrentPage] = useState(1);//current page from pagination
+  const [todosStatus, setTodosStatus] = useState('all'); // filter by done from sorter
+  const [createdAt, setCreatedAt] = useState('desc'); // filter vu date from sorter
+  const [todosCount, setTodosCount] = useState(0);//todos count from server
+  const [postsPerPage, setPostsPerPage] = useState(5);// post per page 1
   const api = axios.create({
-    baseURL: 'https://todo-api-learning.herokuapp.com/v1/',
+    baseURL: 'https://todo-api-learning.herokuapp.com/v1/',// creating baseURL
   });
 
-  useEffect(async () => {
-    await getTodos();
-    // if(res.data.tasks.length === 0) setTodosStatus('all')
-  }, [todosStatus, createdAt, currentPage]);
+  useEffect(() => {
+    getTodos();// recieving todos from api and rendering page
+  }, [todosStatus, createdAt, currentPage]); // triggers to render
 
-  api.interceptors.response.use(
+  api.interceptors.response.use( // error han
     (response) => response,
     (error) => {
       let errorMessage;
@@ -30,7 +29,9 @@ function App() {
       if (!res) {
         errorMessage = 'No responce';
       }
-      if (res === undefined) {errorMessage = 'Client side trouble'}
+      if (res === undefined) {
+        errorMessage = 'Client side trouble';
+      }
       if (error.response) {
         errorMessage = `${error.response.status}: ${error.response.data.message}`;
       }
@@ -39,18 +40,19 @@ function App() {
   );
 
   const getTodos = async () => {
-      const res = await api.get(`tasks/3`, {
-        params: {
-          filterBy: todosStatus === 'all' ? '' : todosStatus,
-          order: createdAt,
-          pp: postsPerPage,
-          page: currentPage,
-        },
-      });
-      if (res.data.tasks.length === 0 && currentPage > 1)
-        setCurrentPage(currentPage - 1);
-      setTodosCount(res.data.count);
-      setFilteredTodos(res.data.tasks);
+    const res = await api.get(`tasks/3`, {
+      params: {
+        filterBy: todosStatus === 'all' ? '' : todosStatus,
+        order: createdAt,
+        pp: postsPerPage,
+        page: currentPage,
+      },
+    });
+    // if(res.data.tasks.length === 0) setTodosStatus('all')
+    if (res.data.tasks.length === 0 && currentPage > 1){ 
+    setCurrentPage(currentPage - 1)}
+    setTodosCount(res.data.count);
+    setFilteredTodos(res.data.tasks);
   };
 
   const createTodo = async (input) => {
@@ -67,8 +69,9 @@ function App() {
   };
 
   const editTodo = async (todo, id) => {
-    await api.patch(`task/3/${id}`, todo);
+    let res = await api.patch(`task/3/${id}`, todo)
     await getTodos();
+    return res;
   };
 
   const deleteTodo = async (id) => {
@@ -76,16 +79,12 @@ function App() {
     await getTodos();
   };
 
-  const createdAtFilter = async (key) => {
-    setCreatedAt(key);
-  };
+  const createdAtFilter = async (key) => setCreatedAt(key);
 
-  const statusFilter = async (key) => {
-    setTodosStatus(key);
-  };
+  const statusFilter = async (key) => setTodosStatus(key);
 
   const paginate = (pageNumber) => {
-    getTodos(todosStatus, createdAt, postsPerPage, pageNumber);
+    getTodos();
     setCurrentPage(pageNumber);
   };
 
