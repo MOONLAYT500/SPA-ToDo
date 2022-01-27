@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/MOONLAYT500/To-Do-List/static/css/main.36f8feb9.css",
+    "main.css": "/MOONLAYT500/To-Do-List/static/css/main.5b3433c2.css",
     "main.js": "/MOONLAYT500/To-Do-List/static/js/main.82820f13.js",
     "static/js/787.edd59a96.chunk.js": "/MOONLAYT500/To-Do-List/static/js/787.edd59a96.chunk.js",
     "index.html": "/MOONLAYT500/To-Do-List/index.html",
-    "main.36f8feb9.css.map": "/MOONLAYT500/To-Do-List/static/css/main.36f8feb9.css.map",
+    "main.5b3433c2.css.map": "/MOONLAYT500/To-Do-List/static/css/main.5b3433c2.css.map",
     "main.82820f13.js.map": "/MOONLAYT500/To-Do-List/static/js/main.82820f13.js.map",
     "787.edd59a96.chunk.js.map": "/MOONLAYT500/To-Do-List/static/js/787.edd59a96.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.36f8feb9.css",
+    "static/css/main.5b3433c2.css",
     "static/js/main.82820f13.js"
   ]
 }
