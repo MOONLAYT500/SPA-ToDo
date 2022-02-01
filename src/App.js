@@ -1,121 +1,130 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './App.css';
 import Creator from './components/Creator/Creator';
-import Scroll from './components/Scroll/Scroll';
 import Sorter from './components/Sorter/Sorter';
 import Tasks from './components/Tasks/Tasks';
+import { Pagination, message } from 'antd';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState(todos);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [todosStatus, setTodosStatus] = useState('a')
-  const [todosTimeFilter, setTodosTimeFilter] = useState('f')
-  const lastTodoIndex = currentPage * 5; 
-  const firstTodoIndex = lastTodoIndex - 5; 
-  const currentTodos = filteredTodos.slice(firstTodoIndex, lastTodoIndex); 
-  
-  useEffect(() => {
-    let renderedTodos = []
-    
+  const [filteredTodos, setFilteredTodos] = useState([]); //all tasks
+  const [currentPage, setCurrentPage] = useState(1); //current page from pagination
+  const [todosStatus, setTodosStatus] = useState('all'); // filter by done from sorter
+  const [createdAt, setCreatedAt] = useState('desc'); // filter vu date from sorter
+  const [todosCount, setTodosCount] = useState(0); //todos count from server
+  const [postsPerPage, setPostsPerPage] = useState(5); // post per page 1
+  const api = axios.create({
+    baseURL: 'https://crud-api12.herokuapp.com/api/', // creating baseURL
+  });
 
-    // checked filters 
-    {if (todosStatus === 'a') renderedTodos.push(...todos)
-    if (todosStatus === 'd') {
-      renderedTodos = todos.filter((todo) => todo.checked === true)
-      setCurrentPage(1)
+  useEffect(() => {
+    getTodos(); // recieving todos from api and rendering page
+  }, [todosStatus, createdAt, currentPage]); // triggers to render
+
+  api.interceptors.response.use(
+    // error han
+    (response) => response,
+    (error) => {
+      let errorMessage;
+      const res = error.request.response;
+      if (!res) {
+        errorMessage = 'No responce';
+      }
+      if (res === undefined) {
+        errorMessage = 'Client side trouble';
+      }
+      if (error.response) {
+        errorMessage = `${error.response.status}: ${error.response.data.message}`;
+      }
+      message.error(errorMessage);
     }
-    if (todosStatus === 'u') {
-      renderedTodos = todos.filter((todo) => todo.checked === false)
-      setCurrentPage(1)
-    }}
-    
-    // date filters  
-    todosTimeFilter === 'o' ? renderedTodos.sort((a, b) => a.date - b.date) :  renderedTodos.sort((a, b) => b.date - a.date) 
-    
-    if(renderedTodos.length === 0) setTodosStatus('a')
-    
-    setFilteredTodos(renderedTodos)  
-  }, [todos,todosStatus,todosTimeFilter]);
+  );
 
-  useEffect(() => {
-    
-    setCurrentPage(currentPage);
-  }, [filteredTodos]);
+  const getTodos = async () => {
+    // getting todos from server
+    const res = await api.get(`todos`, {
+      //sending request
+      params: {
+        // form new request
+        filterBy: todosStatus === 'all' ? '' : todosStatus, // done status
+        order: createdAt, // time status
+        pp: postsPerPage, // todos on page count
+        page: currentPage, // current page to return
+      },
+    });
+    console.log(res);
+    // if(res.data.tasks.length === 0) setTodosStatus('all')
+    if (res.data.todos.length === 0 && currentPage > 1) {
+      // return on previous page? if current is empty
+      setCurrentPage(currentPage - 1);
+    }
 
+    setTodosCount(res.data.count); //seting total todos count
+    setFilteredTodos(res.data.todos); // sitting final todos to render
+  };
 
-  
-
-  const createTodo = (input) => {
+  const createTodo = async (input) => {
+    // create and post new todo to server
     const todo = {
-      id: Math.trunc(Math.random() * 10000),
-      text: input,
-      date: new Date(),
-      checked: false,
+      //new todo
+      name: input, // todo text
+      done: false, // done status
     };
-    if (!todo.text || /^\s*$/.test(todo.text)) {
-      return; // убираем лишние пробелы и пустую строку
+    if (!todo.name || /^\s*$/.test(todo.name)) {
+      // empty string filter
+      message.error('Empty string not allowed'); // message to client
+      return;
     }
-    setTodos([todo, ...todos]);
+    await api.post(`todos`, todo); // posting new todo to api
+    await getTodos(); // getting all todos to render
   };
 
-  const editTodo = (input, id) => {
-    //редактируем пост -надо изменить функцию
-    const n = todos.find((todo) => todo.id == id); // ищем пост, который редактируем в массиве
-    n.text = input; //задаем новое значене тексту задачи в найденном посте
-    todos.map((obj) => obj.text === input); // меняем пост в массиве
-    setTodos(todos); //задаем стейт из отредактированного
+  const editTodo = async (todo, id) => {
+    let res = await api.patch(`todos/${id}`, todo); // sending edited todo to api
+    await getTodos(); //rendering edited
+    return res;
   };
 
-  const chekTodo = (id) => setTodos(todos.filter((todo)=>todo.id === id ? todo.checked = !todo.checked : todo)) 
+  const deleteTodo = async (id) => {
+    await api.delete(`/todos/${id}`); // deleting todo by id
+    await getTodos(); // rendering todos after deleting
+  };
 
-  const checkedTodos=todos.filter(todo=>todo.checked === true)
-  const unCheckedTodos=todos.filter(todo=>todo.checked === false)
-  
+  const createdAtFilter = (key) => setCreatedAt(key); // setting time sattus to filter
 
-  const dateFilter = (key) => setTodosTimeFilter(key)
+  const statusFilter = (key) => setTodosStatus(key); // setting done status to filter
 
-
-  const statusFilter = (key) => setTodosStatus(key)
-
-  const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  if (filteredTodos.length !== 0 && currentTodos.length === 0) {
-    paginate(currentPage - 1);
-  }
+  const paginate = (pageNumber) => {
+    getTodos(); // recieving todos
+    setCurrentPage(pageNumber); //setting page to render
+  };
 
   return (
     <div className="body">
       <h1 className="header">To-Do List</h1>
       <div className="container">
         <Creator createTodo={createTodo} />
-        <Sorter 
-          todosStatus={todosStatus} 
-          statusFilter={statusFilter} 
-          dateFilter={dateFilter}
-          checkedTodos={checkedTodos}
-          unCheckedTodos ={unCheckedTodos}/>
-        <Tasks
-          editTodo={editTodo}
-          deleteTodo={deleteTodo}
-          filteredTodos={filteredTodos}
-          chekTodo={chekTodo}
-          currentTodos={currentTodos}
-        />
-        {filteredTodos.length > 5 && (
-          <Scroll
-            paginate={paginate}
-            postsNumber={filteredTodos.length}
-            currentPage={currentPage}
+        <Sorter statusFilter={statusFilter} createdAtFilter={createdAtFilter} />
+        {todosCount === 0 ? (
+          <div>No Tasks</div> // if filtered tasks is empty
+        ) : (
+          <Tasks
+            editTodo={editTodo}
+            deleteTodo={deleteTodo}
+            filteredTodos={filteredTodos}
           />
         )}
+        <Pagination
+          style={{ marginTop: 'auto' }}
+          current={currentPage}
+          pageSize={postsPerPage}
+          onChange={paginate}
+          total={todosCount}
+          hideOnSinglePage={true} // hide pagination on single page
+        />
       </div>
     </div>
   );
 }
 
 export default App;
-
-// по максимуму рефакторить - но лушче переходить к беку и апишке
